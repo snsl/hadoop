@@ -1,0 +1,19 @@
+
+1) Change directory to hadoop-1.1.2
+
+2) Compile Hadoop --> run 'ant'
+* When it is done, you should see "BUILD SUCCESSFUL".
+
+3) Adjust configuration files necessarily; core-site.xml, hdfs-site.xml, mapred-site.xml, masters, slaves, hadoop-env.sh
+
+4) ONLY IN THE NAMENODE --> run 'bin/hadoop namenode -format'
+
+5) To start everything --> bin/start-all.sh
+6) Put some files into the system --> run 'bin/hadoop fs -put src dest'
+* To read existing files --> run 'bin/hadoop fs -ls'
+* To remove a file --> run 'bin/hadoop fs -rm src'
+
+7) Run a map-reduce application
+* Example --> run 'bin/hadoop jar hadoop-examples-1.1.2.jar grep input output phrase'
+
+8) To stop daemons and to cleanup logs --> run './stop'

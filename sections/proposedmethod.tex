@@ -1,0 +1,208 @@
+\label{proposedmethod}
+This section presents our approach to integrate Hadoop with
+an object-based storage system - Ceph is used as the demonstration
+platform, but any object-based storage system such as PVFS~\cite{Carns:2000:PPF:1268379.1268407} or
+Lustre~\cite{lustre_web} could be used.
+As mentioned in Section~\ref{mapreduce},
+Hadoop consists of a computation layer, MapReduce, and a
+storage layer, HDFS, that manages the underlying storage system. This
+work modifies Hadoop to perform in-place
+computation on large-scale data without moving or transferring data
+anywhere and enables having a lightweight MapReduce computation layer,
+while scaling the underlying storage system. 
+
+A typical Hadoop implementation is shown in Figure~\ref{hadoop_arch}. Storage cluster
+stores the data on which a MapReduce application will be executed. Compute cluster
+consists of nodes that form a master-slave relationship; where the master node is
+responsible for transmitting jobs or I/O operations and monitoring the status of
+slave nodes. Each Hadoop node has two process running corresponding to the computation (MapReduce)
+and storage (HDFS) layers respectively. On master nodes, the computation layer
+process is a jobtracker and the storage layer process is a namenode. On slave nodes,
+the computation layer process is a tasktracker and the storage layer process is a
+datanode.
+
+At the start of a MapReduce application, data is transferred from the storage cluster
+to the compute cluster through a network interconnect. In the storage layer, datanodes
+are responsible for replicating and storing this data as~\textit{blocks}. In the context
+of this discussion, a~\textit{block} is the smallest unit of data that can be accessed
+by Hadoop I/O operations. Each datanode periodically sends heartbeats and block reports
+to the namenode to keep its global view updated. Namenode is responsible for metadata
+operations; such as, keeping track
+of the block location on the datanodes, collecting status reports from the datanodes and
+choosing datanodes to perform I/O operations on. As an example; when a client wants to
+perform an I/O operation (read or write) in the system, it first communicates with the
+namenode to learn the data block locations for a read operation or to obtain a list of
+datanodes to store data blocks on for a write operation. As soon as the client has this
+information, it can communicate with the datanodes directly to perform the I/O operation.
+As mentioned earlier, datanodes replicate data blocks. During a read operation, the client
+chooses one of the replicas (usually the closest one in terms of network distance) to
+start reading from. On the other hand, the write operation is performed in a pipeline, i.e.
+data is written to the first replica location at first, then it is forwarded from the first
+replica location to the second replica location and so on. Client receives an acknowledgment
+at the end of successful I/O operation.
+ 
+A namenode process is usually co-located with a jobtracker in the computation layer. Similarly,
+a datanode process is usually co-located with a tasktracker in the computation layer. Jobtracker
+is responsible for assigning and distributing tasks to the tasktrackers and keeping track of
+their status. Tasktrackers are responsible for performing actual map and reduce tasks with
+data stored in the storage layer, HDFS. Jobtracker receives an acknowledgment from all the
+tasktrackers when they are done with executing a given task.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\columnwidth, keepaspectratio]{figures/hadoop_architecture.pdf}
+\caption{Typical Hadoop Implementation Architecture}
+\label{hadoop_arch}
+\end{figure}
+
+\subsection{Moving Hadoop Processes to Storage Cluster}
+The biggest disadvantage of the typical approach presented in Figure~\ref{hadoop_arch}
+is the need to transfer data between the storage and compute clusters before and
+after a MapReduce application. Considering the size of data being moved, the network
+interconnect can be easily maxed-out and the total energy consumption would increase
+as system resources are utilized for data transfer.
+
+The proposed approach implements Hadoop on the compute cluster. By doing so, the network
+interconnect between separate clusters is completely eliminated and the compute cluster is
+actually a storage cluster at the same time. Ceph stores object data and it is tied to
+the datanode processes in Hadoop. This new architecture is shown in Figure~\ref{new_arch}.
+
+
+\begin{figure}[!htbp]
+\centering
+\makebox[\textwidth]{\includegraphics[scale=0.25, keepaspectratio]{figures/hadoop_new.pdf}}
+\caption{Proposed Hadoop Architecture}
+\label{new_arch}
+\end{figure}
+
+\subsection{Initial Object Store Scan}
+\label{initial_data_scan}
+As shown in Figure~\ref{new_arch}, Ceph object store and Hadoop datanode processes are
+tied together and there can be multiple methods to integrate Hadoop with the underlying Ceph storage system.
+The most straight-forward approach would be to transfer object data directly from Ceph to HDFS.
+Another approach can be using Ceph as the back-end storage of Hadoop and implementing
+Hadoop data management policies there. Instead of these methods, this paper suggests
+an alternative approach,~\textit{co-locating Ceph object store with Hadoop processes
+on the same physical node and creating symbolic links in HDFS for data that already exists in
+Ceph}. Creating symbolic links is a fairly fast operation, eliminates the need to transfer
+data to HDFS and it will be discussed in Section~\ref{symlinks}. In order to create symbolic
+links for the existing data in Ceph, certain properties of Ceph objects must be known. The
+proposed approach makes these properties visible to HDFS, therefore makes Hadoop aware of
+existing Ceph data, through~\textit{Global Information File}, which is created during the initial object store scan.
+
+\begin{figure}[!htbp]
+\centering
+\makebox[\textwidth]{\includegraphics[scale=0.3, keepaspectratio]{figures/initial_scan.pdf}}
+\caption{Initial Integration of Ceph Object Store with Hadoop Datanodes}
+\label{initial_scan}
+\end{figure}
+
+Figure~\ref{initial_scan} shows the process of initial object store scan. As a first step,
+Hadoop namenode process communicates with Ceph Metadata Server (MDS) and it asks for the metadata
+information of all the existing objects in Ceph. Metadata information provided by Ceph
+to Hadoop is discussed in Section~\ref{global_file_contents}. After receiving the metadata from Ceph, Hadoop
+namenode saves this information in the~\textit{Global Information File} and writes it
+to HDFS (as if it is a regular file in HDFS), as shown in the second step in Figure~\ref{initial_scan}.
+As mentioned earlier, Hadoop and Ceph preserve their stand-alone functionality in this
+approach and that makes it possible to copy~\textit{Global Information File} to HDFS.
+
+The procedure to create and distribute the~\textit{Global Information File} is less than ten seconds
+for even 150 GB of data in Ceph and this is a one-time operation that is performed when Hadoop is initialized.
+Hadoop trusts the information in the~\textit{Global Information File} and once Hadoop daemons are successfully
+started, Ceph daemons do not even have to run anymore. If new data is available in Ceph, Ceph can be scanned
+again to regenerate the~\textit{Global Information File}. Hadoop daemons will pick up the updated
+information after a restart. It is important to note that incrementally updating the~\textit{Global Information File}
+with each write operation in a write-heavy workload will be expensive as the existing data blocks will be scanned over and over
+again. This work is geared towards updating the~\textit{Global Information File} asynchronously on already existing
+data in a write-once-read-many workload, which is the optimal use case for MapReduce applications.
+
+\subsection{Contents of the Global Information File}
+\label{global_file_contents}
+The~\textit{Global Information File} is created during the initial data scan, as discussed in Section~\ref{initial_data_scan},
+and it is crucial for the integration of Hadoop and Ceph object store. Following is the summary of information
+stored in the~\textit{Global Information File}.
+\begin{itemize}
+\item~\textit{File names} and~\textit{pre-calculated block names} are used by Hadoop to identify
+objects that already exist in Ceph. Pre-calculated block names are formed by hashing object name, object
+location and replication level provided by Ceph. If a block does not follow this naming convention,
+Hadoop will treat that block as a regular HDFS block and this will make it possible for Hadoop to
+preserve its normal functionality. Meanwhile, not all Ceph objects have to be visible to Hadoop.
+Any object that is not scanned will not be in the~\textit{Global Information File} and therefore,
+will not be visible to Hadoop applications. Any application or user can read the~\textit{Global
+Information File} and find the~\textit{pre-calculated block name} using a~\textit{file name}.
+\item~\textit{Replica locations} are of critical importance. As it is the case with any other storage
+system, Ceph has its own replica placement policy and it is preserved in the proposed approach,
+as the ultimate goal is to perform in-place computation on existing data without moving it anywhere
+else.
+\item~\textit{Absolute paths} are necessary while creating symbolic links to already existing Ceph data from
+Hadoop.
+\item As this work does not ingest any data into HDFS, Hadoop does not know about the sizes of
+existing Ceph objects. The~\textit{file sizes} are fed from the~\textit{Global Information File} to
+Hadoop for MapReduce operations to work properly.
+\end{itemize}
+
+Table~\ref{gif_example} shows an example of two rows from the~\textit{Global Information File}.
+
+\begin{table}[!htbp]
+ \begin{center}
+ \resizebox{\columnwidth}{!}{%
+  \begin{tabular}{|l|l|l|l|l|} \hline
+\textbf{File Name} & \textbf{Pre-calculated Block Name} & \textbf{Replica Location}  & \textbf{Absolute Path}  & \textbf{File Size}\\ \hline
+testfile1 & blk\_582040001401 & node1 & /mnt/ceph/dir1/obj1 & 65536\\ \hline
+testfile2 & blk\_381980001533 & node4 & /mnt/ceph/dir1/obj2 & 65536\\ \hline
+  \end{tabular}%
+ }
+ \end{center}
+ \caption{Example Rows from the~\textit{Global Information File}}
+ \label{gif_example}
+\end{table}
+
+\subsection{Creating Symbolic Links}
+\label{symlinks}
+Once the~\textit{Global Information File} is written to HDFS and distributed to each datanode,
+datanodes can read metadata from the~\textit{Global Information File} and create symbolic
+links for the existing Ceph data accordingly. This procedure is illustrated in Figure~\ref{symbolic_lins}.
+
+\begin{figure}[!htbp]
+\centering
+\makebox[\textwidth]{\includegraphics[scale=0.3, keepaspectratio]{figures/symbolic_lins.pdf}}
+\caption{Creating Symbolic Links for Existing Ceph Data}
+\label{symbolic_lins}
+\end{figure}
+
+As part of this work, symbolic link creation function in Hadoop is modified to accept two arguments;~\textit{file name}
+and~\textit{replica location}. At first, datanode reads a row from the~\textit{Global Information File}. In order to create a
+symbolic link, the datanode needs to know the~\textit{absolute path} of the Ceph object on that node (i.e. /mnt/ceph/dir1/obj1)
+and the~\textit{pre-calculated block name} (i.e. blk\_381980001533) that will be assigned to the newly created symbolic link.
+Both of these parameters can be found from the~\textit{Global Information File} by finding the row that
+matches with the given~\textit{file name} (i.e. testfile1) and~\textit{replica location} (i.e. node1). After retrieving this information,
+the datanode creates the symbolic links and changes its metadata; such that the size of the symbolic link
+is equal to the actual size of the object. This is accomplished by using the~\textit{file size} (i.e. 65536) information
+from the~\textit{Global Information File}. Setting the correct~\textit{file size} is important as MapReduce
+operations reading data through these symbolic links need to know the exact size of the data for the correctness
+of I/O operations.
+
+It is important to note that symbolic links are created for data blocks only. Since data is not ingested
+into HDFS in the proposed approach, Hadoop creates a metadata block of negligible size for a Ceph object.
+Metadata creation is dominated by checksum calculation and reading no data from Ceph means having an empty
+checksum. Additionally, the~\textit{Global Information File} has most of the metadata needed for symbolic link
+creation. As a result, Hadoop metadata block creation overhead is negligible. Checksum implementation is left
+as a future work item as discussed in Section~\ref{conclusions}.
+
+Another important design decision is to disable datanode
+block scans. Hadoop datanodes are responsible for scanning data blocks they own and they report bad
+blocks to the namenode. Symbolic links created for existing Ceph data are detected and invalidated during block scans
+and to prevent this from happening, datanode block scans have to be disabled. Configuration changes for
+datanode block scans are described in Section~\ref{hadoopconfs}. Modifying the datanode block scan in order to
+prevent it catching symbolic links while resuming its normal functionality is also left as a future work item,
+as discussed in Section~\ref{conclusions}.
+
+\subsection{Performing a MapReduce Application}
+At this point, initial data scans and symbolic links creations are done and any MapReduce application can be executed
+on Ceph objects as if they are located in HDFS. Since the proposed approach ingests no data to HDFS and creates
+symbolic links only for the Ceph objects located in the same physical node, that means mappers have to work local
+data. Therefore, the scheduling policy of mappers has to be modified. This is accomplished by changing
+MapReduce task scheduler code; such that, it assigns local map tasks if a MapReduce operation is executed on
+symbolic links (existing Ceph data). This also requires MapReduce split size to be exactly the same with the split
+size of the underlying storage systems. Configuration changes for the MapReduce split size are also described in
+Section~\ref{hadoopconfs}.

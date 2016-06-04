@@ -1,0 +1,554 @@
+%%%%%%%%%%%%%%%%%%%%%%
+\documentclass{singlecol-new}
+%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{natbib,stfloats}
+\usepackage{mathrsfs,amsmath,upgreek}
+\usepackage{graphicx}
+
+\def\newblock{\hskip .11em plus .33em minus .07em}
+
+\newcommand{\be}{\begin{eqnarray}}
+\newcommand{\ee}{\end{eqnarray}}
+\newcommand{\nn}{\nonumber}
+
+\theoremstyle{TH}{
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}[lemma]{Theorem}
+\newtheorem{corrolary}[lemma]{Corrolary}
+\newtheorem{conjecture}[lemma]{Conjecture}
+\newtheorem{proposition}[lemma]{Proposition}
+\newtheorem{claim}[lemma]{Claim}
+\newtheorem{stheorem}[lemma]{Wrong Theorem}
+\newtheorem{algorithm}{Algorithm}
+}
+
+\theoremstyle{THrm}{
+\newtheorem{definition}{Definition}
+\newtheorem{question}{Question}
+\newtheorem{remark}{Remark}
+\newtheorem{scheme}{Scheme}
+}
+
+\theoremstyle{THhit}{
+\newtheorem{case}{Case}[section]
+}
+
+\makeatletter
+
+\def\Reals{\mathbb{R}}
+\def\Ints{\mathbb{Z}}
+\def\Nats{\mathbb{N}}
+
+\def\theequation{\arabic{equation}}
+
+\def\tc{\textcolor{red}}
+
+\def\BottomCatch{%
+\vskip -10pt
+\thispagestyle{empty}%
+\begin{table}[b]%
+\NINE\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lcr@{}}%
+\\[-12pt]
+Copyright \copyright\ 2012 Inderscience Enterprises Ltd. & &%
+\end{tabular*}%
+\vskip -30pt%
+%%\vskip -35pt%
+\end{table}%
+%\def\tc{\textcolor}{red}
+} \makeatother
+
+%%%%%%%%%%%%%%%%%
+\begin{document}%
+%%%%%%%%%%%%%%%%%
+
+\thispagestyle{plain}
+
+\setcounter{page}{1}
+
+\LRH{xxxx}
+
+\RRH{xxxx}
+
+\VOL{x}
+
+\ISSUE{x}
+
+\PUBYEAR{xxxx}
+
+%\BottomCatch
+
+%\CLline
+
+%\subtitle{}
+
+\title{Elastic Hadoop Cluster in a Scaled-out Object Store}
+%\title{Adding Data Analytics Capabilities to a Scaled-out Storage Cluster}
+
+\authorA{xxxx}
+
+\affA{xxxx*\\
+*Corresponding author}
+
+\authorB{xxxx}
+\affB{xxxx}
+
+\begin{abstract}
+\label{sec-abstract}
+\input{sections/abstract}
+\end{abstract}
+
+\KEYWORD{xxxx}
+
+\REF{to this paper should be made as follows: xxxx (xxxx) `xxxx',
+{\it xxxx}, Vol.~x, No.~x, pp.xxx--xxx.}
+
+\begin{bio}
+\tc{AUTHOR PLEASE SUPPLY CAREER HISTORY OF NO MORE THAN 100 WORDS
+FOR EACH AUTHOR.}
+\end{bio}
+
+\maketitle
+
+\section{Introduction}
+\label{sec-introduction}
+\input{sections/introduction}
+
+\section{Background}
+\input{sections/background}
+
+\section{Proposed Method Architecture}
+\input{sections/proposedmethod}
+
+\section{Performance Evaluation}
+\label{sec-performance}
+\input{sections/evaluations}
+
+\section{Related Work}
+\label{sec-related}
+\input{sections/relatedwork}
+
+\section{Conclusions}
+\input{sections/conclusion}
+\label{sec-conclusion}
+
+\section*{Acknowledgements}
+
+
+
+\begin{thebibliography}{99}
+
+%\bibitem[\protect\citeauthoryear{xxxx}{2011}]{Zhang11}
+%xxxx (2011) `Reliable packets delivery over segment-based multi-path
+%in wireless ad hoc networks', {\it Pervasive Computing and
+%Applications (ICPCA), 2011 6th International Conference on},
+%pp.300-–306. \tc{AUTHOR PLEASE SUPPLY LOCATION.}
+
+\bibitem[\protect\citeauthoryear{(Amazon Elastic Compute Cloud,
+http://aws.amazon.com/ec2/)}{}]{amazon_ec2}
+Amazon Elastic Compute Cloud, http://aws.amazon.com/ec2/
+
+\bibitem[\protect\citeauthoryear{(Amazon Simple Storage Service,
+http://aws.amazon.com/s3/)}{}]{amazon_s3}
+Amazon Simple Storage Service, http://aws.amazon.com/s3/
+
+\bibitem[\protect\citeauthoryear{(Hadoop Cluster Setup,
+http://hadoop.apache.org/docs/r1.2.1/cluster\_setup.html)}{}]{hadoopconf}
+Hadoop Cluster Setup, http://hadoop.apache.org/docs/r1.2.1/cluster\_setup.html
+
+\bibitem[\protect\citeauthoryear{(Hadoop JIRA HDFS-941,
+https://issues.apache.org/jira/browse/HDFS-941)}{}]{hdfs941}
+Hadoop JIRA HDFS-941, https://issues.apache.org/jira/browse/HDFS-941
+
+\bibitem[\protect\citeauthoryear{(Google Compute Engine,
+https://cloud.google.com/compute/)}{}]{gce}
+Google Cloud Platform - Compute Engine, https://cloud.google.com/compute/
+
+\bibitem[\protect\citeauthoryear{(Wilson et al., 2014)}{}]{wilsonhadoop}
+Wilson, E. H., Kandemir, M. T. and Gibson, G. (2014)
+'Will they blend?: Exploring big data computation atop traditional hpc nas storage',
+{\it IEEE 34th International Conference on Distributed Computing Systems (ICDCS)},
+pp.524--534
+
+\bibitem[\protect\citeauthoryear{(Ali et al., 2008)}{}]{revisitmd}
+Ali, N., Devulapalli, A., Dalessandro, D., Wyckoff, P. and Sadayappan, P. (2008)
+'Revisiting the metadata architecture of parallel file systems',
+{\it IEEE Petascale Data Storage Workshop (PDSW)},
+pp.1--9
+
+\bibitem[\protect\citeauthoryear{(Xu et al., 2015)}{}]{hadooplustre}
+Xu, C., Goldstone, R., Liu, Z., Chen, H., Neitzel, B. and Yu, W. (2015)
+'Exploiting Analytics Shipping with Virtualized MapReduce on HPC Backend Storage Servers',
+{\it IEEE Transactions on Parallel and Distributed Systems},
+Vol. PP, No. 99, p. 1
+
+\bibitem[\protect\citeauthoryear{(Rutman, 2011)}{}]{rutman}
+Rutman, N. (2011)
+'Map/reduce on lustre, white paper',
+{\it Technical report, Xyratex Technology Limited},
+Havant, Hampshire, UK.
+
+\bibitem[\protect\citeauthoryear{(Yu and Kulkarni, 2014)}{}]{hadoopyarnprogress}
+Yu, W. and Kulkarni, O. (2014)
+'Progress Report on Efficient Integration of Lustre and Hadoop/YARN',
+{\it The Lustre User Group Conference},
+Miami, FL, USA.
+
+\bibitem[\protect\citeauthoryear{(Kathpal and Yasa, 2014)}{}]{nakshatra}
+Kathpal, A. and Yasa, G. A. N. (2014)
+'Nakshatra: Towards running batch analytics on an archive',
+{\it IEEE 22nd International Symposium on Modelling, Analysis \&
+Simulation of Computer and Telecommunication Systems (MASCOTS)},
+pp.479--482
+
+\bibitem[\protect\citeauthoryear{(Palanisamy et al., 2014)}{}]{vncache}
+Palanisamy, B., Singh, A., Mandagere, N., Alatorre, G. and Liu, L. (2014)
+'Mapreduce analysis for cloud-archived data',
+{\it 14th IEEE/ACM International Symposium on Cluster, Cloud and Grid Computing (CCGrid)},
+pp.51--60
+
+\bibitem[\protect\citeauthoryear{(Sevilla et al., 2014)}{}]{supmr}
+Sevilla, M., Nassi, I., Ioannidou, K., Brandt, S. and Maltzahn, C. (2014)
+'SupMR: Circumventing Disk and Memory Bandwidth Bottlenecks for Scale-up MapReduce',
+{\it IEEE Parallel and Distributed Processing Symposium Workshops (IPDPSW)},
+pp.1505--1514
+
+\bibitem[\protect\citeauthoryear{(Cheng et al., 2015)}{}]{chengcast}
+Cheng, Y., Iqbal, M. S., Gupta, A and Butt, A.R. (2015)
+'CAST: Tiering Storage for Data Analytics in the Cloud',
+{\it ACM 24th International Symposium on High-Performance Parallel and
+Distributed Computing (HPDC)},
+New York, NY, USA.
+pp.45--56
+
+\bibitem[\protect\citeauthoryear{(Rupprecht et al., 2014)}{}]{rupprechtbd}
+Rupprecht, L., Zhang, R. and Hildebrand, D. (2014)
+'Big Data Analytics on Object Stores: A Performance Study',
+{\it SuperComputing (SC)},
+New Orleans, LA, USA.
+
+\bibitem[\protect\citeauthoryear{(Using Lustre with Apached Hadoop,
+http://wiki.lustre.org/images/1/1b/Hadoop\_wp\_v0.4.2.pdf)}{}]{lustre_with_hadoop}
+Using Lustre with Apache Hadoop,
+http://wiki.lustre.org/images/1/1b/Hadoop\_wp\_v0.4.2.pdf
+
+\bibitem[\protect\citeauthoryear{(Dean and Ghemaway, 2008)}{}]{Dean:2008:MSD:1327452.1327492}
+Dean, J. and Ghemawat, S. (2008) 'MapReduce: Simplified Data Processing
+on Large Clusters', {\it Communications of the ACM - 50th Anniversary Issue},
+Vol. 51, No. 1, pp.107--113
+
+\bibitem[\protect\citeauthoryear{(Sathiamoorthy et al., 2013)}{}]{Sathiamoorthy:2013:XEN:2488335.2488339}
+Sathiamoorthy, M., Asteris, M., Papailiopoulos, D., Dimakis, A. G., Vadali, R., Chen, S. and Borthakur, D. (2013)
+'Xoring elephants: Novel erasure codes for big data',
+{\it VLDB Endowment},
+Vol. 6, No. 5, pp.325--336
+
+\bibitem[\protect\citeauthoryear{(Cheng et al., 2012)}{}]{conf/cluster/ChengLMXQRZG12}
+Cheng, Z., Luan, Z., Meng, Y., Xu, Y., Qian, D., Roy, A., Zhang, N. and Guan, G. (2012)
+'Erms: an elastic replication management system for hdfs',
+{\it IEEE International Conference on Cluster Computing Workshops (CLUSTER WORKSHOPS)}
+pp.32--40
+
+\bibitem[\protect\citeauthoryear{(Fan et al., 2011)}{}]{Fan11diskreduce:replication}
+Fan, B., Tantisiriroj, W., Xiao, L. and Gibson, G. (2011)
+'Diskreduce: Replication as a prelude to erasure coding in data-intensive scalable computing'
+Parallel Data Laboratory, Carnegie Mellon University, Pittsburgh, PA, USA.
+
+\bibitem[\protect\citeauthoryear{(Ananthanarayanan et al., 2009)}{}]{Ananthanarayanan:2009:CAW:1855533.1855548}
+Ananthanarayanan, R., Gupta, K., Pandey, P., Pucha, H., Sarkar, P., Shah, M. and Tewari, R. (2009)
+'Cloud analytics: Do we really need to reinvent the storage stack',
+{\it 1st USENIX Workshop on Hot Topics in Cloud Computing (HOTCLOUD)},
+San Diego, CA, USA.
+
+\bibitem[\protect\citeauthoryear{(Tantisiriroj et al., 2011)}{}]{Tantisiriroj:2011:DDF:2063384.2063474}
+Tantisiriroj, W., Son, S. W., Patil, S., Lang, S. J., Gibson, G. and Ross, R. B. (2011)
+'On the duality of data-intensive file system design: reconciling HDFS and PVFS',
+{\it ACM 2011 International Conference for High Performance Computing, Networking, Storage and Analysis},
+p. 67
+
+\bibitem[\protect\citeauthoryear{(Wang et al., 2009)}{}]{Wang:2009:KHG:1645164.1645176}
+Wang, J., Crawl, D. and Altintas, I. (2009)
+'Kepler+ Hadoop: a general architecture facilitating data-intensive applications in scientific workflow systems',
+{\it ACM 4th Workshop on Workflows in Support of Large-Scale Science},
+p. 12
+
+\bibitem[\protect\citeauthoryear{(Xu et al., 2010)}{}]{Xu:2010:IHP:1807167.1807272}
+Xu, Y., Kostamaa, P. and Gao, L. (2010)
+'Integrating hadoop and parallel DBMs',
+{\it ACM SIGMOD International Conference on Management of data},
+pp.969--974
+
+\bibitem[\protect\citeauthoryear{(Ibrahim et al., 2012)}{}]{6217451}
+Ibrahim, S., Jin, H., Lu, L., He, B., Antoniu, G. and Wu, S. (2012)
+'Maestro: Replica-aware map scheduling for mapreduce',
+{\it 12th IEEE/ACM International Symposium on Cluster, Cloud and Grid Computing (CCGrid)}
+pp.435--442
+
+\bibitem[\protect\citeauthoryear{(Eltabakh et al., 2011)}{}]{Eltabakh:2011:CFD:2002938.2002943}
+Eltabakh, M. Y., Tian, Y., Özcan, F., Gemulla, R., Krettek, A. and McPherson, J. (2011)
+'CoHadoop: flexible data placement and its exploitation in Hadoop',
+{\it VLDB Endowment},
+Vol. 4, No. 9, pp.575--585.
+
+\bibitem[\protect\citeauthoryear{(Porter, 2010)}{}]{Porter:2010:DSC:1773912.1773923}
+Porter, G. (2010)
+'Decoupling storage and computation in hadoop with superdatanodes'
+{\it ACM SIGOPS Operating Systems Review}
+Vol. 44, No. 2, pp.41--46.
+
+\bibitem[\protect\citeauthoryear{(Ananthanarayanan et al., 2011)}{}]{Ananthanarayanan:2011:SCS:1966445.1966472}
+Ananthanarayanan, G., Agarwal, S., Kandula, S., Greenberg, A., Stoica, I., Harlan, D. and Harris, E. (2011)
+'Scarlett: coping with skewed content popularity in mapreduce clusters',
+{\it ACM 6th Conference on Computer Systems},
+pp.287--300
+
+\bibitem[\protect\citeauthoryear{(Mihailescu et al., 2013)}{}]{180733}
+Mihailescu, M., Soundararajan, G. and Amza C. (2013)
+'MixApart: Decoupled Analytics for Shared Storage Systems',
+{\it 11th USENIX Conference on File and Storage Technologies},
+pp.133--146
+
+\bibitem[\protect\citeauthoryear{(Gantz and Reinsel, 2012)}{}]{idcbigdata}
+Gantz, J. and Reinsel, D. (2012) 'The digital universe in 2020: Big data,
+bigger digital shadows, and biggest growth in the far east', {\it
+IDC iView: IDC Analyze the Future 2007}, pp.1--16
+
+\bibitem[\protect\citeauthoryear{(Lustre,
+http://wiki.lustre.org/index.php/Main\_Page)}{}]{lustre_web}
+Lustre, http://wiki.lustre.org/index.php/Main\_Page
+
+\bibitem[\protect\citeauthoryear{(Maltzahn et al., 2010)}{}]{maltzahn2010ceph}
+Maltzahn, C., Molina-Estolano,  E., Khurana, A., Nelson, A.J., Brandt, S.A. and Weil, S. (2010)
+'Ceph as a Scalable Alternative to the Hadoop Distributed File System',
+{\it login: The USENIX Magazine},
+Vol. 35, pp.38--49.
+
+\bibitem[\protect\citeauthoryear{(Shvachko, 2010)}{}]{shvachko2010hdfs}
+Shvachko, K.V. (2010)
+'HDFS Scalability: The Limits to Growth',
+{\it login:: the magazine of USENIX \& SAGE},
+Vol. 35, No. 2, pp.6--16
+
+\bibitem[\protect\citeauthoryear{(OpenStack Swift,
+https://wiki.openstack.org/wiki/Swift)}{}]{openstack_swift}
+OpenStack Swift, https://wiki.openstack.org/wiki/Swift
+
+\bibitem[\protect\citeauthoryear{(Object-Based Storage Devices-3,
+http://www.t10.org/)}{}]{osd3}
+Object-Based Storage Devices-3, http://www.t10.org/
+
+\bibitem[\protect\citeauthoryear{(Shvachko et al., 2010)}{}]{apache_hadoop}
+Shvachko, K., Kuang, H., Radia, S. and Chansler, R. (2010)
+'The Hadoop Distributed File System',
+{\it IEEE 26th Symposium on Mass Storage Systems and Technologies (MSST)},
+pp.1--10
+
+\bibitem[\protect\citeauthoryear{(Weil et al., 2006)}{}]{cephorig}
+Weil, S. A., Brandt, S. A., Miller, E. L., Long, D. D. and Maltzahn, C. (2006)
+'Ceph: A scalable, high-performance distributed file system',
+{\it USENIX 7th Symposium on Operating Systems Design and Implementation},
+pp.307--320
+
+\bibitem[\protect\citeauthoryear{(Carns et al., 2000)}{}]{Carns:2000:PPF:1268379.1268407}
+Carns, P. H., Ligon, III, W. B., Ross, R. B. and Thakur, R. (2000)
+'PVFS: A Parallel File System for Linux Clusters',
+{\it 4th Annual Linux Showcase \& Conference (ALS'00)},
+Vol. 4, p. 28
+
+%\bibitem[\protect\citeauthoryear{Myneni and Patel}{2010}]{myneni10col}
+%Myneni, S. and  Patel, V.L. (2010) 'Organization of biomedical data
+%for collaborative scientific research: a research information
+%management system', {\it International Journal of Information
+%Management}, Vol. 30, No. 3, pp.256--264
+%
+%\bibitem[\protect\citeauthoryear{Bekelman et al.}{2003}]{bekelman03}
+%Bekelman, J.E., Li, Y. and Gross, C.P. (2003) 'Scope and impact of
+%financial conflicts of interest in biomedical research: a systematic
+%review', {\it JAMA}, Vol. 289, No. 19, pp.454--65
+%
+%\bibitem[\protect\citeauthoryear{Stein}{2008}]{stein08}
+%Stein, L.D. {2008} 'Towards a cyberinfrastructure for the biological
+%sciences: progress, visions and challenges', {\it Nature Reviews
+%Genetics}, Vol. 9, No. 9, pp.678--688.
+%
+%\bibitem[\protect\citeauthoryear{NIH Statement on Sharing Scientific Research
+%Data}{http://grants.nih.gov/grants/policy/data\_sharing/}]{nih03datasharing}
+%NIH Statement on Sharing Scientific Research Data,
+%http://grants.nih.gov/grants/policy/data\_sharing/
+%
+%\bibitem[\protect\citeauthoryear{Policy for sharing of data obtained in NIH supported or conducted
+%genome-wide association studies}{2008}]{nih08policy} Policy for
+%sharing of data obtained in NIH supported or conducted genome-wide
+%association studies,
+%http://grants.nih.gov/grants/guide/notice-files/not-od-07-088.html
+%
+%\bibitem[\protect\citeauthoryear{Network for Translational Research (NTR): Optical Imaging in
+%Multimodality
+%Platforms}{http://imaging.cancer.gov/programsandresources/speci\break
+%alizedinitiatives/ntroi}]{ntr} Network for Translational Research
+%(NTR): Optical Imaging in Multimodality Platforms,
+%http://imaging.cancer.gov/programsandresources/specializedinitiatives/ntroi
+%
+%\bibitem[\protect\citeauthoryear{Piwowar~et~al.}{2008}]{piwowar08culture}
+%Piwowar, H., Becich, M., Bilofsky, H. and Crowley, R. (2008) `PLoS
+%medicine', {\it Sept, No. 9, Towards a Data Sharing Culture:
+%Recommendations for Leadership from Academic Health Centers},
+%Vol.~5.
+%
+%\bibitem[\protect\citeauthoryear{Birnholtz et al.}{2003}]{birnholtz03data}
+%Birnholtz, J.P. and Bietz, M.J. (2003) `Data at work: supporting
+%sharing in science and engineering', {\it GROUP}, pp.339--348.
+%
+%\bibitem[\protect\citeauthoryear{Data Sharing \& Intellectual Capital (DSIC) Workspace}
+%{https://cabig.nci.nih.gov/working\_groups/DSIC\_SLWG}]{dsic} Data
+%Sharing \& Intellectual Capital (DSIC) Workspace,
+%https://cabig.nci.nih.gov/working\_groups/DSIC\_SLWG
+%
+%\bibitem[\protect\citeauthoryear{Getting Connected with
+%caBIG}{https://cabig.nci.nih.gov/getting\_connected/}]{cabigconnected}
+%Getting Connected with caBIG, https://cabig.nci.nih.gov/\break
+%getting\_connected/
+%
+%\bibitem[\protect\citeauthoryear{Digital Imaging and Communications in Medicine
+%(DICOM)}{http://medical.nema.org/}]{dicom} Digital Imaging and
+%Communications in Medicine (DICOM), http://medical.nema.org/
+%
+%\bibitem[\protect\citeauthoryear{The Cancer Genome Atlas (TCGA) Data Portal}{http://cancergenome.nih.gov/dataportal}]{tcga}
+%The Cancer Genome Atlas (TCGA) Data Portal,
+%http://cancergenome.nih.gov/dataportal
+%
+%\bibitem[\protect\citeauthoryear{National Biomedical Imaging
+%Archive}{https://cabig.nci.nih.gov/tools/NCIA}]{nbia} National
+%Biomedical Imaging Archive, https://cabig.nci.nih.gov/tools/NCIA
+%
+%\bibitem[\protect\citeauthoryear{caBIG: cancer Biomedical Informatics Grid}{http://caBIG.nci.nih.gov/}]{cabig}
+%caBIG: cancer Biomedical Informatics Grid, http://caBIG.nci.nih.gov/
+%
+%\bibitem[\protect\citeauthoryear{Biomedical Informatics Research Network}{
+%http://www.nbirn.net/}]{birn}
+%Biomedical Informatics Research Network, http://www.nbirn.net/
+%
+%\bibitem[\protect\citeauthoryear{Cyberinfrastructure for the Biological Sciences: Plant Science
+%Cyberinfrastructure Collaborative
+%(PSCIC)}{http://www.nsf.gov/pubs/2006/nsf06594/nsf06594.htm}]{pscic}
+%Cyberinfrastructure for the Biological Sciences: Plant Science
+%Cyberinfrastructure Collaborative (PSCIC),
+%http://www.nsf.gov/pubs/2006/nsf06594/nsf06594.htm
+%
+%\bibitem[\protect\citeauthoryear{MIRC}{http://mirc.rsna.org}]{mirc}
+%MIRC, http://mirc.rsna.org
+%
+%\bibitem[\protect\citeauthoryear{Foster and
+%Iamnitchi}{2003}]{foster03p2p2grid} Foster, I. and Iamnitchi, A.
+%(2003) `On death, taxes, and the convergence of peer-to-peer and
+%grid computing', {\it IPTPS'03}.
+%
+%\bibitem[\protect\citeauthoryear{Keidl et al.}{2002}]{keidl02metadata}
+%Keidl, M., Kreutz, A., Kemper, A. and Kossmann, D. (2002) `A publish
+%{\&} subscribe architecture for distributed metadata management',
+%{\it ICDE}.
+%
+%\bibitem[\protect\citeauthoryear{Taylor and Ives}{2006}]{taylor06reconcile}
+%Taylor, N.E. and Ives, Z.G. (2006) `Reconciling while tolerating
+%disagreement in collaborative data sharing', {\it SIGMOD}.
+%
+%\bibitem[\protect\citeauthoryear{Rader and Wash}{2008}]{rader08tag}
+%Rader, E.J. and Wash, R. (2008) {\it CSCW}, pp.239-248, Influences
+%on tag choices in del.icio.us.
+%
+%\bibitem[\protect\citeauthoryear{Halevy et~al.}{2006}]{halevy06integration}
+%Halevy, A., Rajaraman, A. and Ordille, J. (2006) {\it VLDB, Data
+%integration: the teenage years},
+%http://portal.acm.org/citation.cfm?id=1182635.1164130
+%
+%\bibitem[\protect\citeauthoryear{Doan and Halevy}{2005}]{doan05semantic}
+%Doan, A. and Halevy, A.Y. (2005) Semantic Integration Research in
+%the Database Community: A Brief Survey, {\it AI Magazine}, Vol. 26,
+%No. 1, pp.83--94.
+%
+%\bibitem[\protect\citeauthoryear{Beynon-Davies et~al.}{1997}]{beynon97}
+%Beynon-Davies, P., Bonde, L., McPhee, D. and Jones, C.B. (1997) `A
+%collaborative schema integration system', {\it Comput. Supported
+%Coop. Work}, Vol. 6, No. 1, Norwell, MA, USA, pp.1--18, issn =
+%0925-9724.
+%
+%\bibitem[\protect\citeauthoryear{Wang and Vergara-Niedermayr}{2008}]{wang08com}
+%Wang, F. and Vergara-Niedermayr, C. (2008) `Collaboratively Sharing
+%Scientific Data', {\it CollaborateCom}, pp.805--823.
+%
+%\bibitem[\protect\citeauthoryear{Chin and Lansing}{2004}]{chin04context} Chin Jr., G. and Lansing,
+%C.S. (2008) `Capturing and Supporting Contexts for Scientific Data
+%Sharing via the Biological Sciences Collaboratory', {\it CSCW}, ISBN
+%1-58113-810-5.
+%
+%\bibitem[\protect\citeauthoryear{W3C XML Query (XQuery)}{http://www.w3.org/XML/Query}]{xquery}
+%W3C XML Query (XQuery), http://www.w3.org/XML/Query
+%
+%\bibitem[\protect\citeauthoryear{Wang et al.}{2009}]{wang09security}
+%Wang, F., Hussels, P. and Liu, P. (2009) `Securely and flexibly
+%sharing a biomedical data management system', {\it SPIE}.
+%
+%\bibitem[\protect\citeauthoryear{Marlow et al.}{2006}]{marlow06tag}
+%Marlow, C., Naaman, M., Boyd, D. and Davis, M. (2006) `Position
+%Paper, Tagging, Taxonomy, Flickr, Article, ToRead', {\it
+%Collaborative Web Tagging Workshop}.
+%
+%\bibitem[\protect\citeauthoryear{NCI Enterprise Vocabulary Services (EVS)}{http://ncicb.nci.nih.gov/NCICB /infrastructure /cacore\_overview
+%/vocabulary}]{ncievs} NCI Enterprise Vocabulary Services (EVS),
+%http://ncicb.nci.nih.gov/NCICB /infrastructure /cacore\_overview
+%/vocabulary
+%
+%\bibitem[\protect\citeauthoryear{NCI Enterprise Vocabulary Services (EVS)}{http://ncicb.nci.nih.gov/NCICB /infrastructure /cacore\_overview
+%/vocabulary}]{ncithesaurus} NCI Enterprise Vocabulary Services
+%(EVS), http://ncicb.nci.nih.gov/NCICB /infrastructure
+%/cacore\_overview /vocabulary
+%
+%\bibitem[\protect\citeauthoryear{Bafoutsou and Mentzas}{2002}]{bafoutsou2002281}
+%Bafoutsou, G. and Mentzas, G. (2002) `Review and functional
+%classification of collaborative systems', {\it International Journal
+%of Information Management}, Vol. 22, No. 4, pp.281--305.
+%
+%\bibitem[\protect\citeauthoryear{Bos et al.}{2007}]{zimmerman07taxonomy}
+%Bos, N., Zimmerman, A., Olson, J., Yew, J., Yerkie, J. and Dahl, E.
+%et al. (2007) `From shared databases to communities of practice: A
+%taxonomy of collaboratories', {\it Journal of Computer-Mediated
+%Communication},  Vol. 12, No. 2.
+%
+%\bibitem[\protect\citeauthoryear{Myneni and Patel}{2010}]{myneni10col}
+%Myneni, S. and  Patel, V.L. (2010) `Organization of biomedical data
+%for collaborative scientific research: A research information
+%management system', {\it International Journal of Information
+%Management}, Vol. 30, No. 3, June, pp.256--264.
+%
+%\bibitem[\protect\citeauthoryear{myGrid}{http://www.mygrid.org.uk/}]{misc{mygrid}}
+%myGrid, http://www.mygrid.org.uk/
+%
+%\bibitem[\protect\citeauthoryear{Pike and Gahegan}{2007}]{pike07}
+%Pike, W. and Gahegan, M. (2007) `Beyond ontologies: Toward situated
+%representations of scientific knowledge', {\it International Journal
+%of Human-Computer Studies}, Vol. 65, No. 7, pp.674--688.
+\end{thebibliography}
+
+
+\section*{Appendix}
+
+%We have proposed the CSD scheme that makes use of multiple bridge
+%nodes within the close neighbourhood of the source and insecure
+%neighbours. These bridge nodes cooperatively help to deliver secret
+%link key information from the source towards the insecure
+%neighbours. In the delivery process, no secret information is
+%disclosed to any node en route. These routers simply forward the
+%encrypted data. Even the bridge nodes only get to know partial
+%information about the secrets that they help to deliver.
+
+\end{document}
+
+%\def\notesname{Note}
+%
+%\theendnotes
+
+%\section*{Query}
+%
+%\tc{AQ1: AUTHOR PLEASE CITE FIGURE 8 IN TEXT.}
+
+\end{document}

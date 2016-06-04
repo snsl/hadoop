@@ -1,0 +1,6 @@
+#!/bin/bash
+
+bin/stop-all.sh
+rm -rf logs/*
+rm -rf output*
+rm -rf /tmp/hadoop-1cengizk_gmail_com/*

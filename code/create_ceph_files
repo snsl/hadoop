@@ -1,0 +1,10 @@
+#!/bin/bash
+
+STARTFROMFILE=1
+NUMBER_OF_FILES=10
+
+for ((i = $STARTFROMFILE; i < $STARTFROMFILE + $NUMBER_OF_FILES; i++ ))
+do
+        rados -p data put obj$i $HOME/testfiles/file$i
+done
+

@@ -1,0 +1,70 @@
+#!/bin/bash
+
+#list files in storage system
+files=($(rados -p data ls))
+
+#number of files
+num_files=${#files[@]}
+
+#remove existing log files
+rm -f ~/global_file_*
+
+#get number of replicas
+num_replicas=$(ceph osd pool get data size | awk -F ": " '{print $2}')
+
+for ((i=0; $i<$num_files; i=$i+1));
+do
+	#get location information
+	data=$(ceph osd map data ${files[$i]})
+
+	#get placement group
+	pg=$(echo $data | awk -F " " '{print $10}' | awk -F "." '{print $2}')
+	#make sure pg is 8 chars long, prepend 0s to it if necessary
+	pg_size=${#pg}
+	if [ $pg_size -lt 8 ]
+	then
+		for ((j=0; $j<(8-$pg_size); j=$j+1));
+		do
+			pg="0"$pg
+		done
+	fi
+	#get pg dir
+	pg_dir=$(echo $data | awk -F " " '{print $11}' | awk -F "(" '{print $2}' | awk -F ")" '{print $1}')
+	
+	#get object name
+	object_name=${files[$i]}
+
+	#get osd numbers
+	first_index=$(echo $data | (grep -bo 'up (') | awk -F ":" '{print $1}')
+	second_index=$(echo $data | (grep -bo '], p' | head -1) | awk -F  ":" '{print $1}')
+	let "first_index += 5"
+	let "length = second_index - first_index"
+	osdnums=${data:$first_index:$length}
+
+	for ((j=1; $j<=$num_replicas; j=$j+1));
+	do
+		current_osd_num=$(echo $osdnums | awk -v osd_index=$j -F "," '{print $osd_index}')
+
+		location=$(ceph osd metadata $current_osd_num | grep '"hostname": "' | awk -F '": "' '{print $2}' | awk -F '",' '{print $1}')
+		echo $location >> ~/global_file_NODES
+                locations[$i]=$location
+
+		osd_path=$(ceph osd metadata $current_osd_num | grep '"osd_data": "' | awk -F '": "' '{print $2}' | awk -F '",' '{print $1}')
+		path=$osd_path"/current/"$pg_dir"_head/"$object_name"__head_"${pg^^}"*"
+                ssh $location readlink -f $path >> ~/global_file_PATHS
+
+		block_id="c"$pg$pg_dir
+		echo $block_id | tr "." $current_osd_num  >> ~/global_file_BLKID
+
+                echo $object_name >> ~/global_file_NAMES
+
+                size=$(rados -p data stat $object_name | awk -F ' ' '{print $6}')
+                echo $object_name $size >> ~/global_file_SIZES
+	done
+done
+
+for ((i=0; $i<$num_files; i=$i+1));
+do
+        dest=${locations[$i]}":~/"
+        scp ~/global_file* $dest
+done

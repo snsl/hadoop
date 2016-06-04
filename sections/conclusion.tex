@@ -1,0 +1,27 @@
+\label{conclusions}
+In this paper, we presented an approach that performs computation
+on existing large-scale data in an object storage system without moving
+data anywhere and analyzed the outcomes of this approach. Experimental
+evaluations with Hadoop and Ceph object-based storage system show that
+it is possible to implement Hadoop on top of Ceph as a lightweight computational
+framework and to perform computational tasks in-place alleviating the need to transfer
+large-scale data to a remote compute cluster. Initial data copy
+performance is improved by up to 96\% and MapReduce performance is
+improved by up to 20\%.
+
+Future research directions include implementing checksum calculation algorithms,
+tests with more data and larger storage systems and making datanode block scans
+work with symbolic links. The proposed approach in this paper
+does not read any data into HDFS and performing checksum calculations without
+reading any data into HDFS is tricky; because, Hadoop and the underlying storage
+system might have different checksum calculation algorithms. As an example;
+Hadoop uses CRC32; but, if the underlying storage system uses another checksum
+algorithm (i.e. MD5), this at least requires converting one checksum calculation
+method to another, which is a very expensive operation, even if no data is read
+into HDFS. Additionally, performance evaluation tests in this work are conducted
+with five nodes with three replicas at most. Further tests with different number
+of nodes and replicas would be helpful to prove the effectiveness of our approach.
+Finally, datanode block scans are disabled as they are detecting and invalidating
+the symbolic links created in the proposed approach. They can be changed to resume their
+normal functionality while not invalidating symbolic links; instead of disabling
+them all together.

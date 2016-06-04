@@ -1,0 +1,6 @@
+#!/bin/sh
+
+/usr/src/hadoop-1.1.2/bin/stop-all.sh
+rm -rf /tmp/hadoop-root/*
+rm -rf logs/*
+rm -rf output

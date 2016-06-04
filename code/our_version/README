@@ -1,0 +1,40 @@
+
+* "hadoop-1.1.2" should be placed in /usr/src/ in each node
+
+* You need to type "ant" in /usr/src/hadoop-1.1.2 in each node to compile hadoop
+	** When it is done, you should see something like "BUILD SUCCESSFUL"
+
+* There are four scripts in /usr/src/hadoop-1.1.2 that I prepared; runjavaclient, start, stop and test
+	(1) Assuming you compiled hadoop-1.1.2 using "ant" at this point; you first need to execute 'runjavaclient' script --> IN ANY OF THE NODES; BUT JUST ONCE
+		*** 'runjavaclient' executes 'mauiobjbrowser' command on every file in the input test directory (i.e. /mnt/mauifs/1TB_directory_x)
+		*** When 'runjavaclient' is done, you should see file '/mnt/mauifs/global_file_info' in mauifs
+	(2) Now to format the HDFS system, you need to execute "bin/hadoop namenode -format" --> ONLY IN THE NAMENODE in /usr/src/hadoop-1.1.2 directory
+	(3) After that you need to use 'start' script --> ONLY IN THE NAMENODE
+		*** In the start script there are two important parameters ; TESTDIR and the for loop
+		*** If you change the input test directory, you should update TESTDIR
+		*** The current value in the for loop is (1..100); this means hundred files are going to be created
+		*** You can change '100' to any value you want; i.e. 43461 files make 1TB in total
+	(4) At this point you need to use the 'test' script --> ONLY IN THE NAMENODE
+		*** The for loop in the 'start' script also exists here
+		*** You can change it to any number as long as it is the same with or smaller than the value in 'start' script
+		*** Results will be stored in /usr/src/hadoop-1.1.2/output directory
+		*** As stated in the script you can change the phrase to look for
+	(5) Once everything is done and you want to stop the cluster, you can run the 'stop' script --> IN ALL OF THE NODES
+		*** Before stopping the system, you can use the 'test' script as many times as you want
+		*** Stop removes all files, turns off all servers; but the code stays compiled
+		*** At this point you can go back to step (2)
+
+* Hardcoded paths in "hadoop-1.1.2" (these paths should be updated in the code if any of them changes)
+	** "/mnt/mauifs/global_file_info"
+		*** in src/hdfs/org/apache/hadoop/hdfs/server/datanode/FSDataset.java and src/hdfs/org/apache/hadoop/hdfs/server/namenode/FSNamesystem.java
+		*** in clientjavascript.java
+	** "/mnt/mauifs/1TB_directory_x"
+		*** in clientjavascript.java
+
+* In /src/hdfs/org/apache/hadoop/hdfs/server/namenode/FSNamesystem.java
+	** Line 1655; String mauifs_path = output.substring(27, first_space_index);
+	** Line 1735; String mauifs_path = output.substring(27, first_space_index);
+	** Number "27" in the lines above should be changed accordingly ONLY IN THE NAMENODE if the input directory is changed from its current value ("/mnt/mauifs/1TB_directory_x") to something else
+	** For example; if the input directory is changed to "/mnt/mauifs/1TB_directory_11", it should be changed to 28
+	** If the input directory is changed to "/mnt/mauifs/1TB_directory_2", it stays the same
+

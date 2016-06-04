@@ -1,0 +1,19 @@
+#!/bin/bash
+startfile=1
+endfile=$1
+path=/16TB
+testdir=/mnt/mauifs${path}
+tenant=17f4bae4765345c5aa425fe5eab834ee
+
+rm -f /var/log/global_file_*
+
+for (( i=$startfile; i<=$endfile; i=i+1 )); do
+    mauiobjbrowser -t $tenant -p $testdir/$i | egrep "SS:|Path|replica id|OSD ID" | awk -W non-decimal-data -v id=$testdir/$i -v r=$i -v once="" '{if ($1=="replica") { printf "\n%s ", id;} if ($1=="OSD") {if (once=="") {once=sprintf("%d%d%06i", "0x"substr($NF,1,4), "0x"substr($NF,5,3), r)} printf " %s ", once}; if ($1=="Path:" || $1=="SS:") printf " %s ", $NF}' >> /var/log/global_file_temp
+done
+
+
+cat /var/log/global_file_temp | awk '{if (NF>0) print $3 }'| uniq > /var/log/global_file_BLKID 
+cat /var/log/global_file_temp | awk '{if (NF>0) print $2 }' > /var/log/global_file_NODES
+cat /var/log/global_file_temp | awk '{if (NF>0) print $4 }' > /var/log/global_file_PATHS
+
+for i in {51..65}; do scp /var/log/global_file_* 10.5.113.$i:/var/log ; done

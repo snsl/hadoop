@@ -1,0 +1,37 @@
+\label{background}
+This section gives a brief overview of the main components of the
+approach proposed in this work - MapReduce and object-based storage.
+
+\subsection{MapReduce}
+\label{mapreduce}
+MapReduce is a parallel computational model developed originally by Google~\cite{Dean:2008:MSD:1327452.1327492}
+and it is widely used for distributed processing of large datasets over clusters. Data in MapReduce is
+represented with $<$key, value$>$ pairs. The first step of an
+application using MapReduce is to partition its input data
+into blocks that are replicated across datanodes. This data is then
+processed in parallel with mappers that
+produce intermediate data from the input data. This intermediate data
+is then fed to reducers which process
+the intermediate data based on intermediate keys and combine intermediate values to form the final output data of
+the application.
+
+Hadoop~\cite{apache_hadoop} is a commonly used open-source implementation of MapReduce and it consists of
+two layers - storage and computation. The MapReduce algorithm is implemented in the computational layer, whereas
+the storage layer is managed by the Hadoop Distributed File System (HDFS). HDFS provides redundancy by replicating data
+three times (by default) across the storage nodes while also trying to
+preserve the data locality of the system. One
+replica is stored locally, the second replica is located in another node in the same rack and the last replica is
+stored in another rack. Hadoop applications also follow a write-once-read-many workflow and as a
+result, they can benefit from the approach presented in this paper extensively, as data is not ingested
+from a remote storage cluster to the compute cluster.
+
+\subsection{Object-Based Storage}
+Object-based storage is a storage model that stores and accesses data in flexible-sized logical
+containers, called~\textit{objects}, instead of using the traditional fixed-sized, block-based
+containers. Objects store metadata either together with data or in dedicated object attributes. Metadata can
+be any type of data (i.e. size, access permissions, creation time etc.) describing the actual object data.
+Increasing interest in object-based storage led to the standardization of the T10 object-based storage interface~\cite{osd3}.
+There have been many examples of object-based storage systems in cluster file systems; such as PVFS~\cite{Carns:2000:PPF:1268379.1268407}
+and Lustre~\cite{lustre_web}, as well as scaled out cloud storage systems; such as Ceph~\cite{cephorig},
+OpenStack Swift~\cite{openstack_swift}, and Amazon S3~\cite{amazon_s3}. These systems are typically
+designed as a software interface on top of an existing file system.

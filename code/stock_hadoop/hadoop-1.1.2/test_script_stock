@@ -1,0 +1,50 @@
+#!/bin/bash
+
+#TEST VARIABLES
+HADOOPDIR=$(pwd)
+TESTDIR=$HOME"/testfiles"
+NUMBER_OF_FILES=10
+STARTFROMFILE=1
+PHRASE='abd'
+
+#---------------------------------------------------------------------------------------------------------------------------#
+##################STOCK HADOOP#######################
+#---------------------------------------------------------------------------------------------------------------------------#
+#stop any running hadoop instances and do initial cleanup
+rm -rf $HADOOPDIR/output
+$HADOOPDIR/bin/hadoop fs -rmr grep*
+for ((i = $STARTFROMFILE; i < $STARTFROMFILE + $NUMBER_OF_FILES; i++ ))
+do
+        $HADOOPDIR/bin/hadoop fs -rmr output$i
+        $HADOOPDIR/bin/hadoop fs -rm obj$i
+done
+
+#write the data for stock case
+time_stock_write_start="$(date +%s)"
+for ((i = $STARTFROMFILE; i < $STARTFROMFILE + $NUMBER_OF_FILES; i++ ))
+do
+        $HADOOPDIR/bin/hadoop fs -put $TESTDIR/obj$i obj$i
+done
+time_stock_write_end="$(($(date +%s)-time_stock_write_start))"
+
+#create the output directory
+mkdir $HADOOPDIR/output
+
+#start the grep application
+time_stock_grep_start="$(date +%s)"
+for ((i = $STARTFROMFILE; i < $STARTFROMFILE + $NUMBER_OF_FILES; i++))
+do
+#'EE' is a phrase that is frequently found
+        $HADOOPDIR/bin/hadoop jar $HADOOPDIR/hadoop-examples-1.1.2.jar grep obj$i output$i $PHRASE
+done
+time_stock_grep_end="$(($(date +%s)-time_stock_grep_start))"
+
+#check the result
+for ((i = $STARTFROMFILE; i < $STARTFROMFILE + $NUMBER_OF_FILES; i++))
+do
+        $HADOOPDIR/bin/hadoop fs -get output$i $HADOOPDIR/output/output$i
+	#cat $HADOOPDIR/output/output$i/*
+done
+
+echo "Writing the data in stock Hadoop took: ${time_stock_write_end} seconds"
+echo "MapReduce application in stock Hadoop took: ${time_stock_grep_end} seconds"

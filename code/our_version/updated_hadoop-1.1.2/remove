@@ -1,0 +1,5 @@
+#!/bin/bash
+
+rm -rf /tmp/hadoop-1cengizk_gmail_com/*
+ssh -i ~/.ssh/google_compute_engine instance-2 rm -rf /tmp/hadoop-1cengizk_gmail_com/*
+ssh -i ~/.ssh/google_compute_engine instance-3 rm -rf /tmp/hadoop-1cengizk_gmail_com/*

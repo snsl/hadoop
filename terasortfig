@@ -1,0 +1,100 @@
+unlink(".RData")
+unlink(".RHistory")
+rm(list=ls())
+
+pdf("result4.pdf", 8.5, 11)
+
+error.bar <- function(x, y, upper, lower=upper, length=0.1, ...) {
+if(length (x) != length (y) | length(y) != length(lower) | length(lower) != length(upper))
+stop("vectors must be same length")
+arrows(x, y+upper, x, y-lower, angle=90, code=3, length=length, ...)
+}
+
+par(mar=c(5,6.5,5,0), oma=c(0,0,4,0), xpd=NA, mfrow=c(2,1))
+
+#---first row---
+par(mgp=c(2.5,1,0))
+a <- c(55,56,57)
+b <- c(22,28,22)
+c <- c(55,57,61)
+d <- c(22,21,25)
+e <- c(106,103,99)
+f <- c(34,37,37)
+g <- c(103,104,106)
+h <- c(35,34,34)
+i <- c(453,475,537)
+j <- c(135,132,129)
+k <- c(484,465,463)
+l <- c(129,131,134)
+stdevs <- c(sd(a), sd(b), sd(c), sd(d), sd(e), sd(f), sd(g), sd(h), sd(i), sd(j), sd(k), sd(l))
+means <- c(mean(a), mean(b), mean(c), mean(d), mean(e), mean(f), mean(g), mean(h), mean(i), mean(j), mean(k), mean(l))
+centers <- barplot(means, yaxt='n', cex.names=1.5, beside=TRUE, names.arg=expression(
+NA,"          5 GB",NA,NA,
+NA,"         10 GB",NA,NA,
+NA,"         50 GB",NA,NA),
+col=c("black","darkgray","black","ghostwhite","black","darkgray",
+"black","ghostwhite","black","darkgray","black","ghostwhite"),
+density=c(-1,-1,25,-1,-1,-1,25,-1,-1,-1,25,-1),
+angle=c(0,0,45,0,0,0,45,0,0,0,45,0),
+space=c(1,0,0.5,0,1,0,0.5,0,1,0,0.5,0))
+error.bar(centers, means, 1.96*stdevs/sqrt(3))
+title(xlab="Input size", cex.lab=1.5)
+par(mgp=c(5,1,0))
+axis(2, las=1, cex.axis=1.5, tck=-.05)
+title(ylab="Total execution time (s)", cex.lab=1.5)
+title(main="1 file, data copy into HDFS", cex.main=1.4, font.main = 2, line=5.5, bty="o", adj=0.5)
+
+par(xpd=T)
+legend("top", inset=-0.35, fill=c("black","darkgray","black","ghostwhite"), density=c(-1,-1,25,-1), c("a", "b", "c", "d"), bty="n", ncol=2, cex=1.25,
+legend=c(
+expression("3 nodes-2 replicas-stock"),
+expression("3 nodes-2 replicas-proposed"),
+expression("5 nodes-3 replicas-stock"),
+expression("5 nodes-3 replicas-proposed")))
+par(xpd=F)
+par(new=F)
+
+#---second row---
+par(mar=c(4.5,6.5,5.5,0))
+par(mgp=c(2.5,1,0))
+a <- c(319,311,313)
+b <- c(320,322,324)
+c <- c(308,309,325)
+d <- c(317,324,322)
+e <- c(843,878,836)
+f <- c(857,773,776)
+g <- c(831,843,823)
+h <- c(782,770,746)
+i <- c(9108,8946,9160)
+j <- c(9162,8952,9002)
+k <- c(9659,9938,9076)
+l <- c(9001,9104,10971)
+stdevs <- c(sd(a), sd(b), sd(c), sd(d), sd(e), sd(f), sd(g), sd(h), sd(i), sd(j), sd(k), sd(l))
+means <- c(mean(a), mean(b), mean(c), mean(d), mean(e), mean(f), mean(g), mean(h), mean(i), mean(j), mean(k), mean(l))
+centers <- barplot(means, yaxt='n', cex.names=1.5, beside=TRUE, names.arg=expression(
+NA,"          5 GB",NA,NA,
+NA,"         10 GB",NA,NA,
+NA,"         50 GB",NA,NA),
+col=c("black","darkgray","black","ghostwhite","black","darkgray",
+"black","ghostwhite","black","darkgray","black","ghostwhite"),
+density=c(-1,-1,25,-1,-1,-1,25,-1,-1,-1,25,-1),
+angle=c(0,0,45,0,0,0,45,0,0,0,45,0),
+space=c(1,0,0.5,0,1,0,0.5,0,1,0,0.5,0))
+error.bar(centers, means, 1.96*stdevs/sqrt(3))
+title(xlab="Input size", cex.lab=1.5)
+par(mgp=c(5,1,0))
+axis(2, las=1, cex.axis=1.5, tck=-.05)
+title(ylab="Total execution time (s)", cex.lab=1.5)
+title(main="1 file, mapreduce", cex.main=1.4, font.main = 2, line=4, bty="o", adj=0.5)
+
+par(xpd=T)
+legend("top", inset=-0.23, fill=c("black","darkgray","black","ghostwhite"), density=c(-1,-1,25,-1), c("a", "b", "c", "d"), bty="n", ncol=2, cex=1.25,
+legend=c(
+expression("3 nodes-2 replicas-stock"),
+expression("3 nodes-2 replicas-proposed"),
+expression("5 nodes-3 replicas-stock"),
+expression("5 nodes-3 replicas-proposed")))
+par(xpd=F)
+par(new=F)
+
+dev.off()

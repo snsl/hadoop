@@ -1,0 +1,9 @@
+#!/bin/sh
+
+rm *~
+rm jss.aux
+rm jss.log
+rm jss.bbl
+rm jss.blg
+rm jss.out
+rm jss.spl

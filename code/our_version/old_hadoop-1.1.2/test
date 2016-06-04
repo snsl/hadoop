@@ -1,0 +1,12 @@
+#!/bin/sh
+
+rm -rf /usr/src/hadoop-1.1.2/output
+/usr/src/hadoop-1.1.2/bin/hadoop fs -rmr output*
+mkdir /usr/src/hadoop-1.1.2/output
+
+for i in {1..100}
+do
+#'EE' is a phrase that is frequently found
+	/usr/src/hadoop-1.1.2/bin/hadoop jar hadoop-examples-1.1.2.jar grep $i output$i 'abd'
+	/usr/src/hadoop-1.1.2/bin/hadoop fs -get output$i output/output$i
+done

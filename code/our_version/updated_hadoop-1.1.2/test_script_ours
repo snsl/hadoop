@@ -1,0 +1,100 @@
+#!/bin/bash
+
+#1 --> GREP
+#2 --> WORDCOUNT
+#3 --> TESTDFSIO
+#4 --> TERASORT
+ 
+#TEST VARIABLES
+HADOOPDIR=$(pwd)
+TESTDIR=$HOME"/testfiles"
+NUMBER_OF_FILES=1
+STARTFROMFILE=1
+PHRASE='abd'
+TESTDFSIOSIZE=25
+TERASORTSIZE=10737418
+
+#---------------------------------------------------------------------------------------------------------------------------#
+##################STOCK HADOOP#######################
+#---------------------------------------------------------------------------------------------------------------------------#
+#stop any running hadoop instances and do initial cleanup
+rm -rf $HADOOPDIR/output
+$HADOOPDIR/bin/hadoop fs -rmr grep*
+$HADOOPDIR/bin/hadoop fs -rmr wordcount*
+$HADOOPDIR/bin/hadoop fs -rmr terasort*
+$HADOOPDIR/bin/hadoop fs -rmr benchmarks*
+
+for ((i = $STARTFROMFILE; i < $STARTFROMFILE + $NUMBER_OF_FILES; i++ ))
+do
+        $HADOOPDIR/bin/hadoop fs -rmr output$i
+        $HADOOPDIR/bin/hadoop fs -rm obj$i
+done
+
+if [ "$#" -ne 1 ]; then
+    echo "Illegal number of parameters"
+    exit
+fi
+
+#write the data for stock case
+time_stock_write_start="$(date +%s)"
+if [ "$1" -eq 1 ] || [ "$1" -eq 2 ]
+then
+  for ((i = $STARTFROMFILE; i < $STARTFROMFILE + $NUMBER_OF_FILES; i++ ))
+  do
+    $HADOOPDIR/bin/hadoop fs -put $TESTDIR/obj$i obj$i
+  done
+elif [ "$1" -eq 3 ]
+then
+  $HADOOPDIR/bin/hadoop jar $HADOOPDIR/build/hadoop-test-1.1.3-SNAPSHOT.jar TestDFSIO -write -nrFiles $NUMBER_OF_FILES -fileSize $TESTDFSIOSIZE
+elif [ "$1" -eq 4 ]
+then
+  $HADOOPDIR/bin/hadoop jar $HADOOPDIR/build/hadoop-examples-1.1.3-SNAPSHOT.jar teragen $TERASORTSIZE terasort-input
+fi
+time_stock_write_end="$(($(date +%s)-time_stock_write_start))"
+
+
+#create the output directory
+mkdir $HADOOPDIR/output
+
+#start the mapreduce test 
+time_stock_test_start="$(date +%s)"
+if [ "$1" -eq 1 ]
+then
+  for ((i = $STARTFROMFILE; i < $STARTFROMFILE + $NUMBER_OF_FILES; i++))
+  do
+  #'EE' is a phrase that is frequently found
+    $HADOOPDIR/bin/hadoop jar $HADOOPDIR/build/hadoop-examples-1.1.3-SNAPSHOT.jar grep obj$i output$i $PHRASE
+  done
+elif [ "$1" -eq 2 ]
+then
+  for ((i = $STARTFROMFILE; i < $STARTFROMFILE + $NUMBER_OF_FILES; i++))
+  do
+    $HADOOPDIR/bin/hadoop jar $HADOOPDIR/build/hadoop-examples-1.1.3-SNAPSHOT.jar wordcount obj$i output$i 
+  done
+elif [ "$1" -eq 3 ]
+then
+  $HADOOPDIR/bin/hadoop jar $HADOOPDIR/build/hadoop-test-1.1.3-SNAPSHOT.jar TestDFSIO -read -nrFiles $NUMBER_OF_FILES -fileSize $TESTDFSIOSIZE
+elif [ "$1" -eq 4 ]
+then
+  $HADOOPDIR/bin/hadoop jar $HADOOPDIR/build/hadoop-examples-1.1.3-SNAPSHOT.jar terasort terasort-input terasort-output
+fi
+time_stock_test_end="$(($(date +%s)-time_stock_test_start))"
+
+#check the result
+if [ "$1" -eq 1 ] || [ "$1" -eq 2 ]
+then
+  for ((i = $STARTFROMFILE; i < $STARTFROMFILE + $NUMBER_OF_FILES; i++))
+  do
+    $HADOOPDIR/bin/hadoop fs -get output$i $HADOOPDIR/output/output$i
+    cat $HADOOPDIR/output/output$i/*
+  done
+elif [ "$1" -eq 3 ]
+then
+  $HADOOPDIR/bin/hadoop jar $HADOOPDIR/build/hadoop-test-1.1.3-SNAPSHOT.jar TestDFSIO -clean
+elif [ "$1" -eq 4 ]
+then
+  $HADOOPDIR/bin/hadoop jar $HADOOPDIR/build/hadoop-examples-1.1.3-SNAPSHOT.jar teravalidate terasort-output terasort-validate
+fi
+
+echo "Writing the data in modified Hadoop took: ${time_stock_write_end} seconds"
+echo "MapReduce application in modified Hadoop took: ${time_stock_test_end} seconds"

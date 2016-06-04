@@ -1,0 +1,19 @@
+#!/bin/sh
+
+#TESTDIR
+TESTDIR=/mnt/mauifs/1TB_directory_x/
+
+#starts everything (hdfs + mapreduce)
+#to start hdfs only (start-dfs.sh)
+#to start mapreduce only (start-mapred.sh)
+/usr/src/hadoop-1.1.2/bin/start-all.sh
+
+#not necessary, but make things faster
+#namenode is initially at safe mode when everything is started
+/usr/src/hadoop-1.1.2/bin/hadoop dfsadmin -safemode leave
+
+for i in {1..100}
+do
+	/usr/src/hadoop-1.1.2/bin/hadoop fs -rm $i
+	/usr/src/hadoop-1.1.2/bin/hadoop fs -put $TESTDIR/$i $i
+done

@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+	<property>
+		<name>mapred.job.tracker</name>
+		<value>snslck-2:54311</value>
+	</property>
+  	<property>
+      		<name>mapred.child.java.opts</name>
+      		<value>-Xmx6144m</value>
+  	</property>
+        <property>
+                <name>mapred.task.timeout</name>
+                <value>0</value>
+        </property>
+        <property>
+                <name>mapreduce.map.output.compress</name>
+                <value>true</value>
+        </property>
+        <property>
+                <name>mapreduce.map.output.compress.codec</name>
+                <value>org.apache.hadoop.io.compress.GzipCodec</value>
+        </property>
+        <property>
+                <name>mapred.child.ulimit</name>
+                <value>unlimited</value>
+        </property>
+</configuration>

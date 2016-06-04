@@ -1,0 +1,5 @@
+#!/bin/bash
+
+bin/start-all.sh
+bin/hadoop mradmin -safemode leave
+bin/hadoop dfsadmin -safemode leave

@@ -1,0 +1,86 @@
+High-performance computing on large-scale data has become an
+important use case in recent years. There are various storage
+system solutions for end users to perform high-performance
+computation on large-scale data, while also providing data
+protection and concurrency between different users~\cite{amazon_ec2}.
+
+Clusters and cloud storage applications that work on large-scale
+data typically employ separate compute and storage clusters, since
+the requirements of the compute and storage tiers are different
+from each other. However, a serious drawback of this architecture
+is the need to move large amounts of data from the storage nodes to the 
+compute nodes in order to perform computation and then to move
+the results back to the storage cluster. Today, many storage
+systems store petabytes of data for various applications, such as
+climate modeling, astronomy, genomics analysis etc., and the amount
+of data stored in these systems is projected to reach exabyte scale in
+the near
+future~\cite{idcbigdata}. Therefore, moving big amounts of data
+between storage and compute nodes is not an efficient way of performing
+computation on large-scale data anymore. Additionally, storing data
+both at the storage and compute sites increases storage overhead
+and with data replicated multiple times at both sites for resiliency,
+this overhead becomes even worse. Moving data between storage and
+compute nodes also increases the total energy consumption and the
+network load.
+
+On the other hand, there have been many efforts that have gone into
+improving storage interfaces and abstractions in order to store
+and access data more efficiently. Object-based
+storage~\cite{Gibson:1998:CHS:291006.291029, 1222722} is
+an important effort in this respect and many scaled-out storage
+systems today~\cite{lustre_web,maltzahn2010ceph,openstack_swift}
+are based on the object-based storage abstraction.
+Object-based storage is an alternative to the traditional block-based
+storage (i.e. SCSI, ATA). Data is stored in discrete
+containers, called~\textit{objects}, each of which is identified
+by a distinct numerical identifier. Each object stores data and data
+attributes that can be controlled by the user. Data attributes can be used
+to store metadata describing the data (i.e. size, name, replica
+locations etc.) and metadata management operations to query these
+attributes can be offloaded from dedicated servers to object storage
+for improved performance~\cite{revisitmd}. As a result, object-based
+storage increases the interaction between the storage system and
+the end-user and simplifies the data management of a storage
+system.
+
+Using object-based storage features, the computational applications
+in a cluster or cloud application can benefit from the intelligence
+of the underlying storage system and eliminate data movement while
+enabling in-place analytics capabilities. Consequently, the storage
+layer can be scaled while the computational layer remains
+lightweight. In this paper, we propose
+an example of this approach by implementing a computational
+framework, Hadoop~\cite{apache_hadoop}, on Ceph object-based
+storage system~\cite{cephorig}. We also conduct performance
+evaluations using~\textit{Grep}~\cite{hadoopgrep},
+~\textit{Wordcount}~\cite{hadoopwordcount},~\textit{TestDFSIO}~\cite{hadooptestdfsio}
+and~\textit{TeraSort}~\cite{hadoopterasort} benchmarks
+with various redundancy and
+replication policies. The evaluation results indicate that initial
+data copy performance of Hadoop is improved by up to 96\% and
+MapReduce performance is improved by up to 20\%. It is important
+to note that, Hadoop and Ceph object storage system can still be
+used as stand-alone systems in this approach, meaning that their
+normal functionalities are not impacted.
+
+The rest of this paper is organized as follows.
+Section~\ref{background} briefly introduces MapReduce and object-based storage,
+two main components of this work.
+Then, Section~\ref{relatedwork} discusses related studies in a number
+of categories: improving the performance of Hadoop as a stand-alone system,
+using a cluster file system as the backend storage of Hadoop and integrating
+the computation layer of Hadoop, MapReduce, with object storage systems for
+in-place computation. While presenting studies for the last category, their
+disadvantages against the method presented in this paper are discussed; namely, data is
+still transferred to HDFS, data management policies of the underlying storage
+system are overridden or data-compute locality is only provided through virtualization.
+Section~\ref{proposedmethod} shows how to enable in-place analytics capabilities on
+large-scale data using Hadoop and Ceph object storage without transferring data
+from compute nodes to storage nodes and without changing how the underlying storage
+is managed.
+Section~\ref{results} gives the performance evaluation results of the proposed
+method from~\textit{Grep}~\cite{hadoopgrep},~\textit{Wordcount}~\cite{hadoopwordcount},
+~\textit{TestDFSIO}~\cite{hadooptestdfsio} and~\textit{TeraSort}~\cite{hadoopterasort} benchmarks.
+Finally, Section~\ref{conclusions} summarizes the findings of this work
+and discusses possible future research directions.

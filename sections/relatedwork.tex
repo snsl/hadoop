@@ -1,0 +1,63 @@
+\label{relatedwork}
+This section introduces related studies on improving the performance of Hadoop and its integration with object
+storage.
+
+There have been several research efforts that analyzed and tried to improve the performance of Hadoop without
+integrating it with an underlying storage system. Shvachko et al. show the metadata scalability problem in Hadoop,
+by pointing out that a single namenode in HDFS 
+is sufficient for read-intensive Hadoop workloads, while it will be saturated for write-intensive
+workloads~\cite{shvachko2010hdfs}. Some related studies improved the performance of Hadoop by modifying
+its internal data management methods.~\textit{Scarlett} replicates data based on popularity, rather then
+creating replicas uniformly and causing machines containing popular data to become bottlenecks in MapReduce
+applications~\cite{Ananthanarayanan:2011:SCS:1966445.1966472}. Porter analyzes the effects of decoupling storage and
+computation in Hadoop by using~\textit{SuperDataNodes}, servers that contain more disks than traditional Hadoop nodes,
+for the cases where the ratio of the computation to storage is not known in advance~\cite{Porter:2010:DSC:1773912.1773923}.
+~\textit{CoHadoop} modifies Hadoop by co-locating and copartitioning related data on the same set of nodes with the hints
+gathered from the applications~\cite{Eltabakh:2011:CFD:2002938.2002943}.~\textit{Maestro} identifies map task executions
+processing remote data as an important bottleneck in MapReduce applications and tries to overcome this problem with
+a scheduling algorithm for map tasks that improves locality~\cite{6217451}.
+
+%Some previous efforts integrate Hadoop with scientific workflow systems in order to improve the performance
+%of these systems. Xu et al. integrates~\textit{Teradata EDW}, a parallel database management system, with Hadoop by
+%exploiting the common parallel computing features of both systems~\cite{Xu:2010:IHP:1807167.1807272}. Wang et al. integrates
+%Hadoop with~\textit{Kepler}~\cite{Wang:2009:KHG:1645164.1645176}, a scientific workflow management system, to enable
+%developing domain-specific MapReduce applications and connecting them with the other tasks in the workflow.
+
+Hadoop is also integrated with cluster file systems in a number of studies, in order to analyze the outcomes of using
+cluster file systems for MapReduce applications. Tantisiriroj et al. integrate~\textit{PVFS}~\cite{Carns:2000:PPF:1268379.1268407}
+with Hadoop and compare its performance to
+HDFS~\cite{Tantisiriroj:2011:DDF:2063384.2063474}. Ananthanarayanan et al. use~\textit{metablocks}, logical
+structures that support both large and small block interfaces, with~\textit{GPFS} to show that cluster file systems with
+metablocks can match the performance of Internet file systems for MapReduce
+applications~\cite{Ananthanarayanan:2009:CAW:1855533.1855548}.~\textit{Lustre} can also be used as the
+backend file system of Hadoop~\cite{lustre_with_hadoop}.
+
+%There are also some efforts to integrate erasure coding into Hadoop systems.~\textit{DiskReduce} extends the replication
+%policy of Hadoop by converting the replicated data into RAID blocks with erasure coding to decrease the storage
+%overhead.~\cite{Fan11diskreduce:replication}.~\textit{ERMS} proposes a replication policy for HDFS that changes according to
+%the data popularity~\cite{conf/cluster/ChengLMXQRZG12}. It replicates frequently accessed data, while using erasure
+%codes for unpopular data.~\textit{Xorbas} provides faster repairs for Hadoop systems with erasure codes, while sacrificing
+%from storage space~\cite{Sathiamoorthy:2013:XEN:2488335.2488339}
+
+More recent work integrates object storage with MapReduce for in-place data analytics. Rupprecht et al.
+integrates OpenStack Swift with MapReduce~\cite{rupprechtbd}; however, this work overrides the replication
+policy of OpenStack Swift and has performance loss due to the time reducers spend while renaming results.
+CAST~\cite{chengcast} performs cloud storage allocation and data placement for data
+analytics workloads by leveraging the heterogeneity in cloud storage
+resources and within jobs in an analytics workload. SupMR~\cite{supmr} creates MapReduce input splits from data chunks rather
+than entire data, meaning that data is still copied to the HDFS. Nakshatra~\cite{nakshatra}
+uses pre-fetching and scheduling techniques to improve the performance of data analytics jobs that are executed directly
+on archived data; but, data is still read and ingested into HDFS. Similarly, VNCache~\cite{vncache} and MixApart~\cite{180733}
+use pre-fetching and scheduling techniques to ingest data to a cache on compute cluster. However, data is still transferred from
+the storage cluster to the compute cluster and mechanisms to maintain and clean the caches on compute nodes are needed.
+Rutman presents a method similar to the method we are proposing to integrate Hadoop with Lustre~\cite{rutman}; but, hard
+links are used for the intermediate output data of mappers and a fast network interconnect between the storage and
+compute tiers is assumed to be readily available. The method we are proposing is not dependent on the type of network
+interconnects and symbolic links are used while ingesting data to HDFS. Yu et al.~\cite{hadoopyarnprogress} has a similar
+implementation, where in-situ data analytics on Lustre storage nodes is enabled. Unlike our approach, the map tasks in this
+method do not always work with local data and metadata server is queried for replica locations every time, which can be
+costly in terms of performance. Yu et al.~\cite{hadoopyarnprogress} also co-locates data analytics with Lustre through
+virtualization; while they run on the same physical node in the method we are proposing. VAS~\cite{hadooplustre} is
+another similar study; except that it does not always follow the replication policy of the underlying Lustre storage system
+and it co-locates data and computation using virtual machines. Wilson et al. present RainFS to integrate MapReduce with HPC
+storage~\cite{wilsonhadoop}; however, network-attached remote storage is considered only.

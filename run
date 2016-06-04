@@ -1,0 +1,6 @@
+#!/bin/sh
+./clean
+pdflatex jss.tex
+#bibtex jss.aux
+pdflatex jss.tex
+pdflatex jss.tex
